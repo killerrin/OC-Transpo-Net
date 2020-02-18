@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OCTranspo_Net.Models;
+using OCTranspo_Net.Models.GTFS;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -120,6 +121,50 @@ namespace OCTranspo_Net
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<GetRouteSummaryForStopResultRoot>(responseString, SerializerSettings);
+                return result;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves specific records from all sections of the GTFS file.
+        /// </summary>
+        /// <param name="table">The table to query.</param>
+        /// <param name="id">Optional. A specific row in a table by the id value.</param>
+        /// <param name="column">Optional. A specific column in a table. The use of column requires the use of the value parameter.</param>
+        /// <param name="value">Optional*. A specific value in a column. *Required if column is specified.</param>
+        /// <param name="orderBy">Specify a column to sort by.</param>
+        /// <param name="direction">Specify the direction of sorted records. asc or desc. Default asc.</param>
+        /// <param name="limit">Specify a maximum limit of returned records.</param>
+        /// <returns></returns>
+        public async Task<GTFSQueryRoot<T>> GTFS<T>(string table, string id = null, string column = null, string value = null, string orderBy = null, OCTranspoDataSortOrder direction = OCTranspoDataSortOrder.asc, int? limit = null)
+            where T: GtfsBase
+        {
+            Uri url = new Uri("https://api.octranspo1.com/v1.3/GetNextTripsForStopAllRoutes", UriKind.Absolute);
+
+            var formContent = new List<KeyValuePair<string, string>>();
+            formContent.Add(new KeyValuePair<string, string>("appID", AppID));
+            formContent.Add(new KeyValuePair<string, string>("apiKey", APIKey));
+            formContent.Add(new KeyValuePair<string, string>("table", APIKey));
+            formContent.Add(new KeyValuePair<string, string>("direction", APIKey));
+
+            if (!string.IsNullOrWhiteSpace(id)) { formContent.Add(new KeyValuePair<string, string>("id", id)); }
+            if (!string.IsNullOrWhiteSpace(column)) { formContent.Add(new KeyValuePair<string, string>("column", column)); }
+            if (!string.IsNullOrWhiteSpace(value)) { formContent.Add(new KeyValuePair<string, string>("value", value)); }
+            if (!string.IsNullOrWhiteSpace(orderBy)) { formContent.Add(new KeyValuePair<string, string>("orderBy", orderBy)); }
+            if (limit != null) { formContent.Add(new KeyValuePair<string, string>("limit", limit.ToString())); }
+
+            formContent.Add(new KeyValuePair<string, string>("format", OCTranspoDataFormat.JSON.ToString()));
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new FormUrlEncodedContent(formContent)
+            };
+
+            var response = await Client.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<GTFSQueryRoot<T>>(responseString, SerializerSettings);
                 return result;
             }
             return null;
