@@ -38,8 +38,10 @@ steps:
     command: 'pack'
     configuration: '$(buildConfiguration)'
     packagesToPack: '**/*.csproj'
+    buildProperties: 'build=$(Build.BuildNumber)'
     versioningScheme: 'byBuildNumber'
     nobuild: true
+
 
 - task: PublishBuildArtifacts@1
   inputs:
