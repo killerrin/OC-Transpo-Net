@@ -87,7 +87,7 @@ namespace OCTranspo_Net.Models
             var minutes = int.Parse(parts[1]);
             var startTime = new TimeSpan(hours, minutes, 0);
 
-            return new DateTime().Add(startTime);
+            return new DateTime().Add(startTime).AddMinutes(AdjustedScheduleTime);
         }
 
         /// <summary>
