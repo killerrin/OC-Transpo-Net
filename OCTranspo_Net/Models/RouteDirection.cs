@@ -42,6 +42,10 @@ namespace OCTranspo_Net.Models
         [JsonProperty("Trips")]
         public Trips Trips { get; set; }
 
+        /// <summary>
+        /// Gets the RequestProcessingTime parsed as a DateTime
+        /// </summary>
+        /// <returns>The RequestProcessingTime as a DateTime</returns>
         public DateTime GetRequestProcessingTime()
         {
             return DateTime.ParseExact(RequestProcessingTime, "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
