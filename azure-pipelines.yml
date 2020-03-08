@@ -39,8 +39,11 @@ steps:
     configuration: '$(buildConfiguration)'
     packagesToPack: '**/*.csproj'
     buildProperties: 'build=$(Build.BuildNumber)'
-    versioningScheme: 'byBuildNumber'
     nobuild: true
+    versioningScheme: 'byPrereleaseNumber'
+    majorVersion: '1'
+    minorVersion: '0'
+    patchVersion: '0'
 
 
 - task: PublishBuildArtifacts@1
