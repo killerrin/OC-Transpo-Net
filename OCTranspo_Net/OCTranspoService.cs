@@ -16,12 +16,12 @@ namespace OCTranspo_Net
         /// <summary>
         /// How often the GPS Data is sent from the Vehicles to the OC Transpo Servers
         /// </summary>
-        public int GPS_UPDATE_EVERY_SECONDS { get; set; } = 30;
+        public static int GPS_UPDATE_EVERY_SECONDS { get; set; } = 30;
 
         /// <summary>
         /// The default maximum calls allowed per day by OC Transpo.
         /// </summary>
-        public int DEFAULT_MAXIMUM_CALLS_PER_DAY { get; set; } = 10000;
+        public static int DEFAULT_MAXIMUM_CALLS_PER_DAY { get; set; } = 10000;
         
         public string AppID { get; protected set; }
         public string APIKey { get; protected set; }
