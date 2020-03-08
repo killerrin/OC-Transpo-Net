@@ -19,6 +19,11 @@ namespace OCTranspo_Net.Test
                 //.AddJsonFile("appsettings.json", optional:false, reloadOnChange:true)
                 .AddUserSecrets("4296832b-6b0f-461f-853c-75da4c60a0e2");
             Configuration = builder.Build();
+        }
+
+        [TestInitialize]
+        public void TestInitialization()
+        {
             TranspoService = new OCTranspoService(Configuration["appID"], Configuration["apiKey"]);
         }
 
@@ -34,6 +39,14 @@ namespace OCTranspo_Net.Test
         {
             var result = TranspoService.GetNextTripsForStop("3037", "97").Result;
             Assert.IsNotNull(result);
+
+            //foreach (var routeDirection in result.GetNextTripsForStopResult.Route.RouteDirection)
+            //{
+            //    foreach (var trip in routeDirection.Trips.Trip)
+            //    {
+            //        Debug.WriteLine($"{trip.AdjustmentAge} | {trip.GetArrivalTime(result.TimeOfRequest)}");
+            //    }
+            //}
         }
 
         [TestMethod]
