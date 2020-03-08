@@ -12,6 +12,9 @@ namespace OCTranspo_Net.Models
         [JsonProperty("StopDescription")]
         public string StopDescription { get; set; }
 
+        /// <summary>
+        /// Errors if any for the request made.
+        /// </summary>
         [JsonProperty("Error")]
         public string Error { get; set; }
 

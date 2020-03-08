@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace OCTranspo_Net.Models
 {
@@ -6,5 +7,8 @@ namespace OCTranspo_Net.Models
     {
         [JsonProperty("GetNextTripsForStopResult")]
         public GetNextTripsForStopResult GetNextTripsForStopResult { get; set; }
+
+        public DateTime TimeOfRequest{ get; internal set; } = DateTime.Now;
+        public DateTime TimeOfResponse { get; internal set; } = DateTime.Now;
     }
 }

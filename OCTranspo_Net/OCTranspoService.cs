@@ -55,11 +55,15 @@ namespace OCTranspo_Net
                 Content = new FormUrlEncodedContent(formContent)
             };
 
+            DateTime timeOfRequest = DateTime.Now;
+
             var response = await Client.SendAsync(request);
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<GetRouteSummaryForStopResultRoot>(responseString, SerializerSettings);
+                result.TimeOfRequest = timeOfRequest;
+
                 return result;
             }
 
@@ -87,11 +91,15 @@ namespace OCTranspo_Net
                 Content = new FormUrlEncodedContent(formContent)
             };
 
+            DateTime timeOfRequest = DateTime.Now;
+
             var response = await Client.SendAsync(request);
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<GetNextTripsForStopResultRoot>(responseString, SerializerSettings);
+                result.TimeOfRequest = timeOfRequest;
+
                 return result;
             }
             return null;
@@ -116,11 +124,15 @@ namespace OCTranspo_Net
                 Content = new FormUrlEncodedContent(formContent)
             };
 
+            DateTime timeOfRequest = DateTime.Now;
+
             var response = await Client.SendAsync(request);
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<GetRouteSummaryForStopResultRoot>(responseString, SerializerSettings);
+                result.TimeOfRequest = timeOfRequest;
+
                 return result;
             }
             return null;
@@ -160,11 +172,15 @@ namespace OCTranspo_Net
                 Content = new FormUrlEncodedContent(formContent)
             };
 
+            DateTime timeOfRequest = DateTime.Now;
+
             var response = await Client.SendAsync(request);
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<GTFSQueryRoot<T>>(responseString, SerializerSettings);
+                result.TimeOfRequest = timeOfRequest;
+
                 return result;
             }
             return null;
