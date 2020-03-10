@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using OCTranspo_Net.Converters;
+using OCTranspo_Net.Models.States;
 using System;
 using System.Globalization;
 using System.Text;
@@ -89,6 +90,18 @@ namespace OCTranspo_Net.Models
 
             return new DateTime().Add(startTime).AddMinutes(AdjustedScheduleTime);
         }
+
+        /// <summary>
+        /// Checks if this Trip is using the GPS or Schedule
+        /// </summary>
+        [JsonIgnore]
+        public bool IsGpsData { get { return AdjustmentAge >= 0; } }
+
+        /// <summary>
+        /// Where this Trip was Sourced From
+        /// </summary>
+        [JsonIgnore]
+        public TripDataSource TripSource { get { return IsGpsData ? TripDataSource.GPS : TripDataSource.Schedule; } }
 
         /// <summary>
         /// Gets the Arrival Time as based upon the API Spec: 
