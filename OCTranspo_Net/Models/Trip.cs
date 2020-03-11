@@ -82,20 +82,6 @@ namespace OCTranspo_Net.Models
         public string GpsSpeed { get; set; }
 
         /// <summary>
-        /// Gets the arrival time as a conversion of the Trip Start Time
-        /// </summary>
-        /// <returns>The Start Trip Time as a DateTime</returns>
-        public DateTime GetArrivalTime()
-        {
-            var parts = TripStartTime.Split(':');
-            var hours = int.Parse(parts[0]);
-            var minutes = int.Parse(parts[1]);
-            var startTime = new TimeSpan(hours, minutes, 0);
-
-            return new DateTime().Add(startTime).AddMinutes(AdjustedScheduleTime);
-        }
-
-        /// <summary>
         /// Checks if this Trip is using the GPS or Schedule
         /// </summary>
         [JsonIgnore]
@@ -112,6 +98,20 @@ namespace OCTranspo_Net.Models
                 if (AdjustmentAge == double.MinValue) return TripDataSource.None;
                 return IsGpsData ? TripDataSource.GPS : TripDataSource.Schedule;
             }
+        }
+
+        /// <summary>
+        /// Gets the arrival time as a conversion of the Trip Start Time
+        /// </summary>
+        /// <returns>The Start Trip Time as a DateTime</returns>
+        public DateTime GetArrivalTime()
+        {
+            var parts = TripStartTime.Split(':');
+            var hours = int.Parse(parts[0]);
+            var minutes = int.Parse(parts[1]);
+            var startTime = new TimeSpan(hours, minutes, 0);
+
+            return new DateTime().Add(startTime).AddMinutes(AdjustedScheduleTime);
         }
 
         /// <summary>
