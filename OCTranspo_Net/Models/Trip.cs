@@ -44,8 +44,12 @@ namespace OCTranspo_Net.Models
         /// <summary>
         /// The time since the scheduled was adjusted in whole and fractional minutes.
         /// </summary>
+        /// <remarks>
+        /// If the Adjustment Age is a Negative Value, then it is using the Scheduled Data
+        /// Otherwise if the result is a Positive Value, then it is based off of GPS
+        /// </remarks>
         [JsonProperty("AdjustmentAge")]
-        public double AdjustmentAge { get; set; }
+        public double AdjustmentAge { get; set; } = double.MinValue;
 
         /// <summary>
         /// last trip to pass the stop for the route & direction
@@ -101,7 +105,14 @@ namespace OCTranspo_Net.Models
         /// Where this Trip was Sourced From
         /// </summary>
         [JsonIgnore]
-        public TripDataSource TripSource { get { return IsGpsData ? TripDataSource.GPS : TripDataSource.Schedule; } }
+        public TripDataSource TripSource
+        {
+            get
+            {
+                if (AdjustmentAge == double.MinValue) return TripDataSource.None;
+                return IsGpsData ? TripDataSource.GPS : TripDataSource.Schedule;
+            }
+        }
 
         /// <summary>
         /// Gets the Arrival Time as based upon the API Spec: 
