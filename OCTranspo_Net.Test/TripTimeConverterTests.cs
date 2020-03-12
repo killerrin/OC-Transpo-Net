@@ -15,26 +15,6 @@ namespace OCTranspo_Net.Test
         public void GetScheduledArrivalTime_Daytime_Test()
         {
             DateTime today = DateTime.Today;
-            DateTime now = today.AddHours(23);
-            Trip trip = new Trip
-            {
-                AdjustmentAge = -1,
-                TripStartTime = "26:30",
-                AdjustedScheduleTime = 10,
-            };
-
-            TripTimeConverter converter = new TripTimeConverter(trip, today, now);
-            DateTime arrivalTime = converter.GetScheduledArrivalTime();
-
-            DateTime expected = converter.Today.AddHours(26).AddMinutes(30).AddMinutes(10);
-            Debug.WriteLine($"expected={expected} | arrivalTime={arrivalTime}");
-            Assert.AreEqual(expected, arrivalTime);
-        }
-
-        [TestMethod]
-        public void GetScheduledArrivalTime_Midday_Test()
-        {
-            DateTime today = DateTime.Today;
             DateTime now = today.AddHours(10);
             Trip trip = new Trip
             {
@@ -47,6 +27,26 @@ namespace OCTranspo_Net.Test
             DateTime arrivalTime = converter.GetScheduledArrivalTime();
 
             DateTime expected = converter.Today.AddHours(10).AddMinutes(30).AddMinutes(10);
+            Debug.WriteLine($"expected={expected} | arrivalTime={arrivalTime}");
+            Assert.AreEqual(expected, arrivalTime);
+        }
+
+        [TestMethod]
+        public void GetScheduledArrivalTime_MidnightRollover_Test()
+        {
+            DateTime today = DateTime.Today;
+            DateTime now = today.AddHours(23);
+            Trip trip = new Trip
+            {
+                AdjustmentAge = -1,
+                TripStartTime = "26:30",
+                AdjustedScheduleTime = 10,
+            };
+
+            TripTimeConverter converter = new TripTimeConverter(trip, today, now);
+            DateTime arrivalTime = converter.GetScheduledArrivalTime();
+
+            DateTime expected = converter.Today.AddHours(26).AddMinutes(30).AddMinutes(10);
             Debug.WriteLine($"expected={expected} | arrivalTime={arrivalTime}");
             Assert.AreEqual(expected, arrivalTime);
         }
@@ -75,26 +75,6 @@ namespace OCTranspo_Net.Test
         public void GetScheduledArrivalTimeMinutes_Daytime_Test()
         {
             DateTime today = DateTime.Today;
-            DateTime now = today.AddHours(23);
-            Trip trip = new Trip
-            {
-                AdjustmentAge = -1,
-                TripStartTime = "26:30",
-                AdjustedScheduleTime = 10,
-            };
-
-            TripTimeConverter converter = new TripTimeConverter(trip, today, now);
-            int arrivalTime = converter.GetScheduledArrivalTimeMinutes();
-
-            int expected = (60 * 3) + 30 + 10;
-            Debug.WriteLine($"expected={expected} | arrivalTime={arrivalTime}");
-            Assert.AreEqual(expected, arrivalTime);
-        }
-
-        [TestMethod]
-        public void GetScheduledArrivalTimeMinutes_Midday_Test()
-        {
-            DateTime today = DateTime.Today;
             DateTime now = today.AddHours(10);
             Trip trip = new Trip
             {
@@ -111,6 +91,25 @@ namespace OCTranspo_Net.Test
             Assert.AreEqual(expected, arrivalTime);
         }
 
+        [TestMethod]
+        public void GetScheduledArrivalTimeMinutes_MidnightRollover_Test()
+        {
+            DateTime today = DateTime.Today;
+            DateTime now = today.AddHours(23);
+            Trip trip = new Trip
+            {
+                AdjustmentAge = -1,
+                TripStartTime = "26:30",
+                AdjustedScheduleTime = 10,
+            };
+
+            TripTimeConverter converter = new TripTimeConverter(trip, today, now);
+            int arrivalTime = converter.GetScheduledArrivalTimeMinutes();
+
+            int expected = (60 * 3) + 30 + 10;
+            Debug.WriteLine($"expected={expected} | arrivalTime={arrivalTime}");
+            Assert.AreEqual(expected, arrivalTime);
+        }
 
         [TestMethod]
         public void GetScheduledArrivalTimeMinutes_Midnight_Test()
