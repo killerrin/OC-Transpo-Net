@@ -101,18 +101,65 @@ namespace OCTranspo_Net.Models
         }
 
         /// <summary>
-        /// Gets the arrival time as a conversion of the Trip Start Time
+        /// Gets the TripStartTime converted to a TimeSpan
         /// </summary>
-        /// <returns>The Start Trip Time as a DateTime</returns>
-        public DateTime GetArrivalTime()
+        /// <returns>The TripStartTime</returns>
+        public TimeSpan GetTripStartTimeTimespan()
         {
             var parts = TripStartTime.Split(':');
             var hours = int.Parse(parts[0]);
             var minutes = int.Parse(parts[1]);
             var startTime = new TimeSpan(hours, minutes, 0);
-
-            return new DateTime().Add(startTime).AddMinutes(AdjustedScheduleTime);
+            return startTime;
         }
+
+        /// <summary>
+        /// Gets the TripStartTime converted to a DateTime
+        /// </summary>
+        /// <returns>The TripStartTime</returns>
+        public DateTime GetTripStartTime(DateTime? today = null)
+        {
+            if (!today.HasValue) today = DateTime.Today;
+
+            var startTime = GetTripStartTimeTimespan();
+            if (startTime.Days <= 0)
+            {
+                return today.Value.AddMinutes(startTime.TotalMinutes);
+            }
+
+            int year = today.Value.Year;
+            int month = today.Value.Month;
+            int day = today.Value.Day + startTime.Days;
+
+            return new DateTime(year, month, day, startTime.Hours, startTime.Minutes, 0);
+        }
+
+        #region Scheduled Arrival Time
+        /// <summary>
+        /// Gets the Arrival Time as set on the Schedule
+        /// </summary>
+        /// <returns>The Scheduled Arrival Time</returns>
+        public DateTime GetScheduledArrivalTime(DateTime? today = null)
+        {
+            if (!today.HasValue) today = DateTime.Today;
+
+            var startTime = GetTripStartTime(today.Value);
+            return startTime.AddMinutes(AdjustedScheduleTime);
+        }
+        /// <summary>
+        /// Gets the Scheduled Arrival Time in minutes
+        /// </summary>
+        /// <returns>The Scheduled Arrival Time in minutes</returns>
+        public int GetScheduledArrivalTimeMinutes(DateTime? today = null, DateTime? now = null)
+        {
+            if (!now.HasValue) now = DateTime.Now;
+            if (!today.HasValue) today = DateTime.Today;
+
+            DateTime arrivalTime = GetScheduledArrivalTime(today.Value);
+            int arrivalMinutes = Convert.ToInt32((arrivalTime - now.Value).TotalMinutes);
+            return arrivalMinutes;
+        }
+        #endregion
 
         /// <summary>
         /// Gets the Arrival Time as based upon the API Spec: 
@@ -123,18 +170,45 @@ namespace OCTranspo_Net.Models
         /// <returns>The Time that the trip should arrive</returns>
         public DateTime GetArrivalTime(DateTime timeOfRequest)
         {
-            if (AdjustmentAge < 0) { return GetArrivalTime(); }
+            if (AdjustmentAge < 0) { return GetScheduledArrivalTime(); }
             return GetAdjustedArrivalTime(timeOfRequest);
         }
 
         /// <summary>
-        /// Gets the Arrival Time taking into account the Adjusted Schedule Time
+        /// Gets the Arrival Time in Minutes as based upon the API Spec: 
+        /// - The TripStartTime if AdjustmentAge is less than 0
+        /// - The Adjusted Scheduled Time if AdjustmentAge is less than 0
         /// </summary>
         /// <param name="timeOfRequest">The Time that the API request was made</param>
-        /// <returns>The Time that the trip should arrive</returns>
+        /// <returns>The Time that the trip should arrive, in minutes</returns>
+        public int GetArrivalTimeMinutes(DateTime timeOfRequest)
+        {
+            if (AdjustmentAge < 0) { return GetScheduledArrivalTimeMinutes(); }
+            return GetAdjustedArrivalTimeMinutes(timeOfRequest);
+        }
+
+        #region Adjusted Arrival Time
+        /// <summary>
+        /// Gets the Adjusted Arrival Times
+        /// </summary>
+        /// <param name="timeOfRequest">The Time that the API request was made</param>
+        /// <returns>The time that the trip should arrive</returns>
         public DateTime GetAdjustedArrivalTime(DateTime timeOfRequest)
         {
             return timeOfRequest.AddMinutes(AdjustedScheduleTime);
         }
+
+        /// <summary>
+        /// Gets the Adjusted Arrival Time in minutes
+        /// </summary>
+        /// <param name="timeOfRequest">The Time that the API request was made</param>
+        /// <returns>When the trip should arrive, in minutes</returns>
+        public int GetAdjustedArrivalTimeMinutes(DateTime timeOfRequest)
+        {
+            DateTime arrivalTime = GetAdjustedArrivalTime(timeOfRequest);
+            int arrivalMinutes = Convert.ToInt32((arrivalTime - timeOfRequest).TotalMinutes);
+            return arrivalMinutes;
+        }
+        #endregion
     }
 }
