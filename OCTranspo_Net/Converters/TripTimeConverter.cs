@@ -18,6 +18,12 @@ namespace OCTranspo_Net.Converters
         public int MidnightHourThreshold { get; set; } = 4;
         public bool IsMidnightThresholdActive { get { return Now.Hour < MidnightHourThreshold; } }
 
+        /// <summary>
+        /// Used in GetScheduledArrivalTimeMinutes as a threshold of minutes that is checked against
+        /// before the calculation is attempted again with the Midnight Flag flipped
+        /// </summary>
+        public int MidnightScheduledMinutesArrivalCorrectionThreshold { get; set; } = 600;
+
         public TripTimeConverter(Trip trip) : this(trip, DateTime.Today, DateTime.Now) { }
         public TripTimeConverter(Trip trip, DateTime? today, DateTime? now)
         {
@@ -107,7 +113,7 @@ namespace OCTranspo_Net.Converters
             int arrivalMinutes = Convert.ToInt32((arrivalTime - Now).TotalMinutes);
 
             // If the result is wildly inacurate, then try it again with the Midnight Mode Toggled On
-            if (arrivalMinutes > 1000 || arrivalMinutes < -1000)
+            if (arrivalMinutes > MidnightScheduledMinutesArrivalCorrectionThreshold || arrivalMinutes < -MidnightScheduledMinutesArrivalCorrectionThreshold)
             {
                 if (IsMidnightThresholdActive) { return GetScheduledArrivalTimeMinutes(true); }
             }
