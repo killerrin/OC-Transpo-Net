@@ -26,7 +26,7 @@ namespace OCTranspo_Net.Models
         public string Direction { get; set; }
 
         /// <summary>
-        /// The route & direction heading
+        /// The route and direction heading
         /// </summary>
         [JsonProperty("RouteHeading")]
         public string RouteHeading { get; set; }

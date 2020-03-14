@@ -52,7 +52,7 @@ namespace OCTranspo_Net.Models
         public double AdjustmentAge { get; set; } = double.MinValue;
 
         /// <summary>
-        /// last trip to pass the stop for the route & direction
+        /// Last trip to pass the stop for the route and direction
         /// </summary>
         [JsonProperty("LastTripOfSchedule")]
         public bool LastTripOfSchedule { get; set; }
