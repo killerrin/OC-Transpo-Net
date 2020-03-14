@@ -112,5 +112,16 @@ namespace OCTranspo_Net.Models
             var startTime = new TimeSpan(hours, minutes, 0);
             return startTime;
         }
+
+        /// <summary>
+        /// Gets when the GPS was last updated (AdjustmentAge), represented as a DateTime from when the Request was made
+        /// </summary>
+        /// <param name="timeOfRequest">When the Request was made</param>
+        /// <returns>DateTime represening when the GPS was last Updated; or Null if not a GPS time</returns>
+        public DateTime? GetGPSLastUpdatedTime(DateTime timeOfRequest)
+        {
+            if (TripSource == TripDataSource.GPS) { return timeOfRequest.AddMinutes(AdjustmentAge); }
+            return null;
+        }
     }
 }
